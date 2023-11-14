@@ -1,6 +1,6 @@
 module github.com/kitex-contrib/config-zookeeper
 
-go 1.21.3
+go 1.19
 
 require (
 	github.com/cloudwego/kitex v0.7.3
