@@ -30,7 +30,8 @@ import (
 func WithLimiter(dest string, zookeeperClient zookeeper.Client, opts utils.Options) server.Option {
 	param, err := zookeeperClient.ServerConfigParam(&zookeeper.ConfigParamConfig{
 		Category:          limiterConfigName,
-		ServerServiceName: dest})
+		ServerServiceName: dest,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -45,6 +46,7 @@ func WithLimiter(dest string, zookeeperClient zookeeper.Client, opts utils.Optio
 
 	return server.WithLimit(initLimitOptions(path, uid, dest, zookeeperClient))
 }
+
 func initLimitOptions(path string, uniqueID int64, dest string, zookeeperClient zookeeper.Client) *limit.Option {
 	var updater atomic.Value
 	opt := &limit.Option{}

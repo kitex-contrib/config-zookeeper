@@ -113,6 +113,7 @@ func NewClient(opts Options) (Client, error) {
 func (c *client) SetParser(parser ConfigParser) {
 	c.parser = parser
 }
+
 func (c *client) render(cpc *ConfigParamConfig, t *template.Template) (string, error) {
 	var tpl bytes.Buffer
 	err := t.Execute(&tpl, cpc)
