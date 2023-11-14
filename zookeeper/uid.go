@@ -16,13 +16,10 @@ package zookeeper
 
 import "sync/atomic"
 
-var uniqueID atomic.Int64
-
-func init() {
-	uniqueID.Store(0)
-}
+var uniqueID int64
 
 // GetUniqueID get the unique id
 func GetUniqueID() int64 {
-	return uniqueID.Add(1)
+	atomic.AddInt64(&uniqueID, 1)
+	return atomic.LoadInt64(&uniqueID)
 }
