@@ -54,7 +54,7 @@ type ConfigParam struct {
 
 // Options zookeeper config options. All the fields have default value.
 type Options struct {
-	Server           []string
+	Servers          []string
 	Prefix           string
 	ServerPathFormat string
 	ClientPathFormat string
@@ -64,8 +64,8 @@ type Options struct {
 
 // NewClient Create a default Zookeeper client
 func NewClient(opts Options) (Client, error) {
-	if opts.Server == nil {
-		opts.Server = []string{ZookeeperDefaultServer}
+	if opts.Servers == nil {
+		opts.Servers = []string{ZookeeperDefaultServer}
 	}
 	if opts.Prefix == "" {
 		opts.Prefix = ZookeeperDefaultPrefix
@@ -74,7 +74,7 @@ func NewClient(opts Options) (Client, error) {
 		opts.CustomLogger = NewCustomZookeeperLogger()
 	}
 	if opts.ConfigParser == nil {
-		opts.ConfigParser = defaultConfigParse()
+		opts.ConfigParser = defaultConfigParser()
 	}
 	if opts.ServerPathFormat == "" {
 		opts.ServerPathFormat = ZookeeperDefaultServerPath
@@ -83,7 +83,7 @@ func NewClient(opts Options) (Client, error) {
 		opts.ClientPathFormat = ZookeeperDefaultClientPath
 	}
 
-	conn, _, err := zk.Connect(opts.Server, time.Second*5, zk.WithLogger(opts.CustomLogger))
+	conn, _, err := zk.Connect(opts.Servers, time.Second*5, zk.WithLogger(opts.CustomLogger))
 	if err != nil {
 		return nil, err
 	}

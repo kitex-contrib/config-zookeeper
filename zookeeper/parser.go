@@ -46,6 +46,6 @@ func (p *parser) Decode(data string, config interface{}) error {
 }
 
 // DefaultConfigParse default zookeeper config parser.
-func defaultConfigParse() ConfigParser {
+func defaultConfigParser() ConfigParser {
 	return &parser{}
 }
