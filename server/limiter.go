@@ -55,12 +55,14 @@ func initLimitOptions(path string, uniqueID int64, dest string, zookeeperClient 
 		u.UpdateLimit(opt)
 		updater.Store(u)
 	}
-	onChangeCallback := func(data string, parser zookeeper.ConfigParser) {
+	onChangeCallback := func(restoreDefault bool, data string, parser zookeeper.ConfigParser) {
 		lc := &limiter.LimiterConfig{}
-		err := parser.Decode(data, lc)
-		if err != nil {
-			klog.Warnf("[zookeeper] %s server zookeeper config: unmarshal data %s failed: %s, skip...", dest, data, err)
-			return
+		if !restoreDefault && data != "" {
+			err := parser.Decode(data, lc)
+			if err != nil {
+				klog.Warnf("[zookeeper] %s server zookeeper config: unmarshal data %s failed: %s, skip...", dest, data, err)
+				return
+			}
 		}
 		opt.MaxConnections = int(lc.ConnectionLimit)
 		opt.MaxQPS = int(lc.QPSLimit)

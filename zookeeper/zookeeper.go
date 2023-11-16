@@ -35,7 +35,7 @@ type Client interface {
 	SetParser(ConfigParser)
 	ClientConfigParam(cpc *ConfigParamConfig) (ConfigParam, error)
 	ServerConfigParam(cpc *ConfigParamConfig) (ConfigParam, error)
-	RegisterConfigCallback(context.Context, string, int64, func(string, ConfigParser))
+	RegisterConfigCallback(context.Context, string, int64, func(bool, string, ConfigParser))
 	DeregisterConfig(string, int64)
 }
 type client struct {
@@ -162,7 +162,7 @@ func (c *client) DeregisterConfig(path string, uniqueID int64) {
 }
 
 // RegisterConfigCallback register the callback function to zookeeper client.
-func (c *client) RegisterConfigCallback(ctx context.Context, path string, uniqueID int64, callback func(string, ConfigParser)) {
+func (c *client) RegisterConfigCallback(ctx context.Context, path string, uniqueID int64, callback func(bool, string, ConfigParser)) {
 	clientCtx, cancel := context.WithCancel(context.Background())
 	go func() {
 		mu.Lock()
@@ -186,10 +186,10 @@ func (c *client) RegisterConfigCallback(ctx context.Context, path string, unique
 					if err != nil {
 						klog.Warnf("[zookeeper] get config %s from zookeeper failed: %v", path, err)
 					}
-					callback(nodeValue, c.parser)
+					callback(false, nodeValue, c.parser)
 				} else if watchEvent.Type == zk.EventNodeDeleted {
 					klog.Debugf("[zookeeper] config path: %s deleted", path)
-					callback("", c.parser)
+					callback(true, "", c.parser)
 				}
 			}
 		}
@@ -200,5 +200,5 @@ func (c *client) RegisterConfigCallback(ctx context.Context, path string, unique
 		klog.Debugf("[zookeeper] get config %s from zookeeper failed: %v", path, err)
 		return
 	}
-	callback(string(data), c.parser)
+	callback(false, string(data), c.parser)
 }
