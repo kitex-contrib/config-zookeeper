@@ -25,11 +25,6 @@ import (
 	"github.com/go-zookeeper/zk"
 )
 
-var (
-	ctxMap = make(map[string]context.CancelFunc)
-	mu     sync.Mutex
-)
-
 // Client the wrapper of zookeeper client.
 type Client interface {
 	SetParser(ConfigParser)
@@ -45,6 +40,8 @@ type client struct {
 	serverPathTemplate *template.Template
 	clientPathTemplate *template.Template
 	prefixTemplate     *template.Template
+
+	cancelFuncHolder *cancelFuncHolder
 }
 
 type ConfigParam struct {
@@ -99,14 +96,23 @@ func NewClient(opts Options) (Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	cancelFuncHolder := cancelFuncHolder{
+		cancelMap: make(map[string]context.CancelFunc),
+	}
 	c := &client{
 		zConn:              conn,
 		parser:             opts.ConfigParser,
 		serverPathTemplate: serverPathTemplate,
 		clientPathTemplate: clientPathTemplate,
 		prefixTemplate:     prefixTemplate,
+		cancelFuncHolder:   &cancelFuncHolder,
 	}
 	return c, nil
+}
+
+type cancelFuncHolder struct {
+	cancelMap map[string]context.CancelFunc
+	mu        sync.Mutex
 }
 
 // SetParser support customise parser
@@ -154,21 +160,16 @@ func (c *client) configParam(cpc *ConfigParamConfig, t *template.Template) (Conf
 
 // DeregisterConfig deregister the config.
 func (c *client) DeregisterConfig(path string, uniqueID int64) {
-	mu.Lock()
 	clientKey := path + "/" + strconv.FormatInt(uniqueID, 10)
-	cancel := ctxMap[clientKey]
-	cancel()
-	mu.Unlock()
+	c.cancelFuncHolder.deregister(clientKey)
 }
 
 // RegisterConfigCallback register the callback function to zookeeper client.
 func (c *client) RegisterConfigCallback(ctx context.Context, path string, uniqueID int64, callback func(bool, string, ConfigParser)) {
 	clientCtx, cancel := context.WithCancel(context.Background())
 	go func() {
-		mu.Lock()
 		clientKey := path + "/" + strconv.FormatInt(uniqueID, 10)
-		ctxMap[clientKey] = cancel
-		mu.Unlock()
+		c.cancelFuncHolder.register(clientKey, cancel)
 		for {
 			_, _, watchChan, err := c.zConn.ExistsW(path)
 			if err != nil {
@@ -201,4 +202,21 @@ func (c *client) RegisterConfigCallback(ctx context.Context, path string, unique
 		return
 	}
 	callback(false, string(data), c.parser)
+}
+
+func (cfh *cancelFuncHolder) register(key string, cancelFunc context.CancelFunc) {
+	cfh.mu.Lock()
+	defer cfh.mu.Unlock()
+
+	cfh.cancelMap[key] = cancelFunc
+}
+
+func (cfh *cancelFuncHolder) deregister(key string) {
+	cfh.mu.Lock()
+	defer cfh.mu.Unlock()
+
+	if cancel, ok := cfh.cancelMap[key]; ok {
+		cancel()
+		delete(cfh.cancelMap, key)
+	}
 }
