@@ -45,7 +45,7 @@ func (p *parser) Decode(data string, config interface{}) error {
 	return json.Unmarshal([]byte(data), config)
 }
 
-// DefaultConfigParse default zookeeper config parser.
+// DefaultConfigParser default zookeeper config parser.
 func defaultConfigParser() ConfigParser {
 	return &parser{}
 }

@@ -142,8 +142,8 @@ func (c *client) ClientConfigParam(cpc *ConfigParamConfig) (ConfigParam, error) 
 // configParam render config parameters. All the parameters can be customized with CustomFunction.
 // ConfigParam explain:
 //  1. Prefix: /KitexConfig by default.
-//  2. ServerPath: {{.ServerServiceName}}.{{.Category}} by default.
-//     ClientPath: {{.ClientServiceName}}.{{.ServerServiceName}}.{{.Category}} by default.
+//  2. ServerPath: {{.ServerServiceName}}/{{.Category}} by default.
+//     ClientPath: {{.ClientServiceName}}/{{.ServerServiceName}}/{{.Category}} by default.
 func (c *client) configParam(cpc *ConfigParamConfig, t *template.Template) (ConfigParam, error) {
 	param := ConfigParam{}
 	var err error
