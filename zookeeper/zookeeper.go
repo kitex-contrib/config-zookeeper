@@ -170,8 +170,10 @@ func (c *client) RegisterConfigCallback(ctx context.Context, path string, unique
 	go func() {
 		clientKey := path + "/" + strconv.FormatInt(uniqueID, 10)
 		c.cancelFuncHolder.register(clientKey, cancel)
+		var watchChan <-chan zk.Event
+		var err error
 		for {
-			_, _, watchChan, err := c.zConn.ExistsW(path)
+			_, _, watchChan, err = c.zConn.ExistsW(path)
 			if err != nil {
 				klog.Debugf("[zookeeper] watch node %s failed %v", path, err)
 				return
