@@ -52,6 +52,6 @@ func (s *ZookeeperClientSuite) Options() []client.Option {
 	opts := make([]client.Option, 0, 7)
 	opts = append(opts, WithRetryPolicy(s.service, s.client, s.zookeeperClient, s.opts)...)
 	opts = append(opts, WithRPCTimeout(s.service, s.client, s.zookeeperClient, s.opts)...)
-	opts = append(opts, WithCircuitBreaker(s.service, s.client, s, s.opts)...)
+	opts = append(opts, WithCircuitBreaker(s.service, s.client, s.zookeeperClient, s.opts)...)
 	return opts
 }
