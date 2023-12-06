@@ -51,6 +51,7 @@ func WithRetryPolicy(dest, src string, zookeeperClient zookeeper.Client, opts ut
 		}),
 	}
 }
+
 func initRetryContainer(path string, uniqueID int64, dest string, zookeeperClient zookeeper.Client) *retry.Container {
 	retryContainer := retry.NewRetryContainerWithPercentageLimit()
 
