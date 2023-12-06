@@ -145,7 +145,7 @@ type ConfigParam struct {
 
 #### 治理策略
 
-下面例子中的 configDataId 以及 configGroup 均使用默认值，服务名称为 ServiceName，客户端名称为 ClientName
+下面例子中的 configPath 以及 configPrefix 均使用默认值，服务名称为 ServiceName，客户端名称为 ClientName
 
 ##### 限流 Category=limit
 
@@ -160,12 +160,12 @@ type ConfigParam struct {
 
 例子：
 
-> configDataID: ServiceName.limit
+> configPath: /KitexConfig/ServiceName/limit
 
 ```
 {
-  "connection_limit": 100, 
-  "qps_limit": 2000        
+  "connection_limit": 100,
+  "qps_limit": 2000
 }
 ```
 
@@ -188,23 +188,23 @@ type ConfigParam struct {
 
 例子：
 
-> configDataId: ClientName.ServiceName.retry
+> configPath: /KitexConfig/ClientName/ServiceName/retry
 
 ```
 {
-    "*": {  
+    "*": {
         "enable": true,
-        "type": 0,                 
+        "type": 0,
         "failure_policy": {
             "stop_policy": {
                 "max_retry_times": 3,
                 "max_duration_ms": 2000,
                 "cb_policy": {
-                    "error_rate": 0.5
+                    "error_rate": 0.3
                 }
             },
             "backoff_policy": {
-                "backoff_type": "fixed", 
+                "backoff_type": "fixed",
                 "cfg_items": {
                     "fix_ms": 50
                 }
@@ -212,9 +212,9 @@ type ConfigParam struct {
             "retry_same_node": false
         }
     },
-    "echo": { 
+    "echo": {
         "enable": true,
-        "type": 1,                 
+        "type": 1,
         "backup_policy": {
             "retry_delay_ms": 100,
             "retry_same_node": false,
@@ -240,12 +240,12 @@ type ConfigParam struct {
 
 例子：
 
-> configDataId: ClientName.ServiceName.rpc_timeout
+> configPath: /KitexConfig/ClientName/ServiceName/rpc_timeout
 
 ```
 {
   "*": {
-    "conn_timeout_ms": 100, 
+    "conn_timeout_ms": 100,
     "rpc_timeout_ms": 3000
   },
   "echo": {
@@ -271,14 +271,14 @@ type ConfigParam struct {
 
 echo 方法使用下面的配置（0.3、100），其他方法使用全局默认配置（0.5、200）
 
-> configDataId: `ClientName.ServiceName.circuit_break`
+> configPath: /KitexConfig/ClientName/ServiceName/circuit_break
 
 ```
 {
   "echo": {
     "enable": true,
-    "err_rate": 0.3, 
-    "min_sample": 100 
+    "err_rate": 0.3,
+    "min_sample": 100
   }
 }
 ```

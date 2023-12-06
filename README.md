@@ -2,7 +2,7 @@
 
 [中文](https://github.com/kitex-contrib/config-zookeeper/blob/main/README_CN.md)
 
- **zookeeper** as config centre for service governance.
+ **zookeeper** as config center for service governance.
 
 ## Usage
 
@@ -192,9 +192,9 @@ Example：
 
 ```
 {
-    "*": {  
+    "*": {
         "enable": true,
-        "type": 0,                 
+        "type": 0,
         "failure_policy": {
             "stop_policy": {
                 "max_retry_times": 3,
@@ -204,7 +204,7 @@ Example：
                 }
             },
             "backoff_policy": {
-                "backoff_type": "fixed", 
+                "backoff_type": "fixed",
                 "cfg_items": {
                     "fix_ms": 50
                 }
@@ -212,9 +212,9 @@ Example：
             "retry_same_node": false
         }
     },
-    "echo": { 
+    "echo": {
         "enable": true,
-        "type": 1,                 
+        "type": 1,
         "backup_policy": {
             "retry_delay_ms": 100,
             "retry_same_node": false,
@@ -277,8 +277,8 @@ The echo method uses the following configuration (0.3, 100) and other methods us
 {
   "echo": {
     "enable": true,
-    "err_rate": 0.3, 
-    "min_sample": 100 
+    "err_rate": 0.3,
+    "min_sample": 100
   }
 }
 ```
