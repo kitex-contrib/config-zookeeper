@@ -269,7 +269,7 @@ type ConfigParam struct {
 
 例子：
 
-echo 方法使用下面的配置（0.3、100），其他方法使用全局默认配置（0.5、200）
+echo 方法使用下面的配置（0.3, 100），其他方法使用全局默认配置（0.5, 200）
 
 > configPath: /KitexConfig/ClientName/ServiceName/circuit_break
 
