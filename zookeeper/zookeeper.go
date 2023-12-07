@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
@@ -168,6 +169,11 @@ func (c *client) DeregisterConfig(path string, uniqueID int64) {
 func (c *client) RegisterConfigCallback(ctx context.Context, path string, uniqueID int64, callback func(bool, string, ConfigParser)) {
 	clientCtx, cancel := context.WithCancel(context.Background())
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Error("[zookeeper] listen goroutine error: %v, stack: %s", err, string(debug.Stack()))
+			}
+		}()
 		clientKey := path + "/" + strconv.FormatInt(uniqueID, 10)
 		c.cancelFuncHolder.register(clientKey, cancel)
 		var watchChan <-chan zk.Event
