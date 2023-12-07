@@ -171,7 +171,7 @@ func (c *client) RegisterConfigCallback(ctx context.Context, path string, unique
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Error("[zookeeper] listen goroutine error: %v, stack: %s", err, string(debug.Stack()))
+				klog.Errorf("[zookeeper] listen goroutine error: %v, stack: %s", err, string(debug.Stack()))
 			}
 		}()
 		clientKey := path + "/" + strconv.FormatInt(uniqueID, 10)
