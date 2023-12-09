@@ -1,14 +1,14 @@
-# config-zookeeper(*This is a community driven project*)
+# config-zookeeper
 
-[中文](https://github.com/kitex-contrib/config-zookeeper/blob/main/README_CN.md)
+[English](https://github.com/kitex-contrib/config-zookeeper/blob/main/README.md)
 
- **zookeeper** as config center for service governance.
+使用 **zookeeper** 作为 **Kitex** 的服务治理配置中心
 
-## Usage
+## 用法
 
-### Basic
+### 基本使用
 
-#### Server
+#### 服务端
 
 ```go
 package main
@@ -57,7 +57,7 @@ func main() {
 
 ```
 
-#### Client
+#### 客户端
 
 ```go
 package main
@@ -116,13 +116,13 @@ func main() {
 }
 ```
 
-### Zookeeper Configuration
+### Zookeeper 配置
 
-The client is initialized according to the parameters of `Options` and connects to the zookeeper server. After the connection is established, the suite will listen to the corresponding node according to `Path` and `ServerPathFormat` or`ClientPathFormat`to updates its own policy dynamically. See the `Options` variables below for specific parameters.
+根据 Options 的参数初始化 client，建立链接之后 suite 会根据`Path`以及 `ServerPathFormat` 或者 `ClientPathFormat` 监听对应的节点并动态更新自身策略，具体参数参考下面 `Options` 变量。
 
 #### CustomFunction
 
-Provide the mechanism to custom the zookeeper parameter `Path`.
+允许用户自定义 zookeeper 的参数来自定义参数 `Path`.
 
 ```go
 type ConfigParam struct {
@@ -131,34 +131,34 @@ type ConfigParam struct {
 }
 ```
 
-The final Path is `param.Prefix + "/" + param.Path`
+最终的Path为 `param.Prefix + "/" + param.Path`
 
-#### Options Variable
+#### Options 默认值
 
-| Variable Name    | Default Value                                               | Introduction                                                 |
+| 参数             | 变量默认值                                                  | 作用                                                         |
 | ---------------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
-| Servers          | 127.0.0.1:2181                                              | Zookeeper server nodes                                       |
-| Prefix           | /KitexConfig                                                | The prefix of Zookeeper                                      |
-| ClientPathFormat | {{.ClientServiceName}}/{{.ServerServiceName}}/{{.Category}} | Use go [template](https://pkg.go.dev/text/template) syntax rendering to generate the appropriate ID, and use `ClientServiceName` `ServiceName` `Category` three metadata that can be customised |
-| ServerPathFormat | {{.Category}}                                               | Use go [template](https://pkg.go.dev/text/template) syntax rendering to generate the appropriate ID, and use `ServiceName` `Category` two metadatas that can be customised |
-| ConfigParser     | defaultConfigParser                                         | The default is the parser that parses json                   |
+| Servers          | 127.0.0.1:2181                                              | Zookeeper的服务器节点                                        |
+| Prefix           | /KitexConfig                                                | Zookeeper中的 prefix                                         |
+| ClientPathFormat | {{.ClientServiceName}}/{{.ServerServiceName}}/{{.Category}} | 使用 go [template](https://pkg.go.dev/text/template) 语法渲染生成对应的 ID, 使用 `ClientServiceName` `ServiceName` `Category` 三个元数据 |
+| ServerPathFormat | {{.ServerServiceName}}/{{.Category}}                        | 使用 go [template](https://pkg.go.dev/text/template) 语法渲染生成对应的 ID, 使用 `ServiceName` `Category` 两个元数据 |
+| ConfigParser     | defaultConfigParser                                         | 解析 json 数据的解析器                                       |
 
-#### Governance Policy
+#### 治理策略
 
-> The configPath and configPrefix in the following example use default values, the service name is `ServiceName` and the client name is `ClientName`.
+下面例子中的 configPath 以及 configPrefix 均使用默认值，服务名称为 ServiceName，客户端名称为 ClientName
 
-##### Rate Limit Category=limit
+##### 限流 Category=limit
 
-> Currently, current limiting only supports the server side, so ClientServiceName is empty.
+> 限流目前只支持服务端，所以 ClientServiceName 为空。
 
 [JSON Schema](https://github.com/cloudwego/kitex/blob/develop/pkg/limiter/item_limiter.go#L33)
 
-| Variable         | Introduction                       |
-| ---------------- | ---------------------------------- |
-| connection_limit | Maximum concurrent connections     |
-| qps_limit        | Maximum request number every 100ms |
+| 字段             | 说明                      |
+| ---------------- | ------------------------- |
+| connection_limit | 最大并发数量              |
+| qps_limit        | 每 100ms 内的最大请求数量 |
 
-Example:
+例子：
 
 > configPath: /KitexConfig/ServiceName/limit
 
@@ -171,22 +171,22 @@ Example:
 
 
 
-Note:
+注：
 
-- The granularity of the current limit configuration is server global, regardless of client or method.
-- Not configured or value is 0 means not enabled.
-- connection_limit and qps_limit can be configured independently, e.g. connection_limit = 100, qps_limit = 0
+- 限流配置的粒度是 Server 全局，不分 client、method
+- 「未配置」或「取值为 0」表示不开启
+- connection_limit 和 qps_limit 可以独立配置，例如 connection_limit = 100, qps_limit = 0
 
-##### Retry Policy Category=retry
+##### 重试 Category=retry
 
 [JSON Schema](https://github.com/cloudwego/kitex/blob/develop/pkg/retry/policy.go#L63)
 
-| Variable                      | Introduction                                   |
-| ----------------------------- | ---------------------------------------------- |
-| type                          | 0: failure_policy 1: backup_policy             |
-| failure_policy.backoff_policy | Can only be set one of `fixed` `none` `random` |
+| 参数                          | 说明                                     |
+| ----------------------------- | ---------------------------------------- |
+| type                          | 0: failure_policy 1: backup_policy       |
+| failure_policy.backoff_policy | 可以设置的策略： `fixed` `none` `random` |
 
-Example：
+例子：
 
 > configPath: /KitexConfig/ClientName/ServiceName/retry
 
@@ -232,13 +232,13 @@ Example：
 
 
 
-Note: retry.Container has built-in support for specifying the default configuration using the `*` wildcard (see the [getRetryer](https://github.com/cloudwego/kitex/blob/v0.5.1/pkg/retry/retryer.go#L240) method for details).
+注：retry.Container 内置支持用 * 通配符指定默认配置（详见 [getRetryer](https://github.com/cloudwego/kitex/blob/v0.5.1/pkg/retry/retryer.go#L240) 方法）
 
-##### RPC Timeout Category=rpc_timeout
+##### 超时 Category=rpc_timeout
 
 [JSON Schema](https://github.com/cloudwego/kitex/blob/develop/pkg/rpctimeout/item_rpc_timeout.go#L42)
 
-Example：
+例子：
 
 > configPath: /KitexConfig/ClientName/ServiceName/rpc_timeout
 
@@ -257,19 +257,19 @@ Example：
 
 
 
-Note: The circuit breaker implementation of kitex does not currently support changing the global default configuration (see [initServiceCB](https://github.com/cloudwego/kitex/blob/v0.5.1/pkg/circuitbreak/cbsuite.go#L195) for details).
+注：kitex 的熔断实现目前不支持修改全局默认配置（详见 [initServiceCB](https://github.com/cloudwego/kitex/blob/v0.5.1/pkg/circuitbreak/cbsuite.go#L195)）
 
-##### Circuit Break: Category=circuit_break
+##### 熔断: Category=circuit_break
 
 [JSON Schema](https://github.com/cloudwego/kitex/blob/develop/pkg/circuitbreak/item_circuit_breaker.go#L30)
 
-| Variable   | Introduction                      |
-| ---------- | --------------------------------- |
-| min_sample | Minimum statistical sample number |
+| 参数       | 说明             |
+| ---------- | ---------------- |
+| min_sample | 最小的统计样本数 |
 
-Example：
+例子：
 
-The echo method uses the following configuration (0.3, 100) and other methods use the global default configuration (0.5, 200)
+echo 方法使用下面的配置（0.3, 100），其他方法使用全局默认配置（0.5, 200）
 
 > configPath: /KitexConfig/ClientName/ServiceName/circuit_break
 
@@ -283,16 +283,16 @@ The echo method uses the following configuration (0.3, 100) and other methods us
 }
 ```
 
-##### Degradation: Category=degradation
+##### 降级: Category=degradation
 
 [JSON Schema](https://github.com/cloudwego/kitex/blob/develop/pkg/circuitbreak/item_circuit_breaker.go#L30)
 
-| Variable   | Introduction                       |
-|------------|------------------------------------|
-| enable     | Whether to enable degradation      |
-| percentage | The percentage of dropped requests | 
+| 参数         | 说明       |
+|------------|----------|
+| enable     | 是否开启降级策略 |
+| percentage | 丢弃请求的比例  | 
 
-Example：
+例子：
 
 > configPath: /KitexConfig/ClientName/ServiceName/degradation
 
@@ -302,19 +302,18 @@ Example：
   "percentage": 30
 }
 ```
-Note: Degradation is not enabled by default.
+注：默认不开启降级（enable为false）
 
-### More Info
+### 更多信息
 
-Refer to [example](https://github.com/kitex-contrib/config-zookeeper/tree/main/example) for more usage.
+更多示例请参考 [example](https://github.com/kitex-contrib/config-zookeeper/tree/main/example)
 
-### Note
+### 备注
 
-In ZooKeeper, when a node is created, its parent must exist.
+在 ZooKeeper 中，创建节点时，节点的父节点必须存在。
 
-## Compatibility
+## 兼容性
 
-This Package use https://github.com/go-zookeeper/zk
+该包使用 https://github.com/go-zookeeper/zk
 
-maintained by:  [jiuxia211](https://github.com/jiuxia211)
-
+主要贡献者： [jiuxia211](https://github.com/jiuxia211)
