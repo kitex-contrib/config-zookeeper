@@ -43,7 +43,7 @@ func NewSuite(service string, cli zookeeper.Client, opts ...utils.Option) *Zooke
 	return su
 }
 
-// Options return a list client.Option
+// Options return a list server.Option
 func (s *ZookeeperServerSuite) Options() []server.Option {
 	opts := make([]server.Option, 0, 2)
 	opts = append(opts, WithLimiter(s.service, s.zookeeperClient, s.opts))
