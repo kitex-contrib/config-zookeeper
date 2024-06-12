@@ -39,8 +39,8 @@ type Config struct {
 // DeepCopy returns a copy of the current Config
 func (c *Config) DeepCopy() iface.ConfigValueItem {
 	if c == nil {
-       return nil
-    }
+		return nil
+	}
 	result := &Config{
 		Enable:     c.Enable,
 		Percentage: c.Percentage,

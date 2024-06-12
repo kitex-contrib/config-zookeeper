@@ -23,16 +23,16 @@ import (
 	"github.com/kitex-contrib/config-zookeeper/utils"
 	"github.com/kitex-contrib/config-zookeeper/zookeeper"
 )
-	
+
 func WithDegradation(dest, src string, zookeeperClient zookeeper.Client, opts utils.Options) []client.Option {
-    param, err := zookeeperClient.ClientConfigParam(&zookeeper.ConfigParamConfig{
-       Category:          degradationConfigName,
-       ServerServiceName: dest,
-       ClientServiceName: src,
-    })
-    if err != nil {
-       panic(err)
-    }
+	param, err := zookeeperClient.ClientConfigParam(&zookeeper.ConfigParamConfig{
+		Category:          degradationConfigName,
+		ServerServiceName: dest,
+		ClientServiceName: src,
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	for _, f := range opts.ZookeeperCustomFunctions {
 		f(&param)
