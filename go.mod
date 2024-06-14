@@ -3,18 +3,18 @@ module github.com/kitex-contrib/config-zookeeper
 go 1.19
 
 require (
+	github.com/bytedance/gopkg v0.0.0-20230728082804-614d0af6619b
+	github.com/cloudwego/configmanager v0.2.0
 	github.com/cloudwego/kitex v0.7.3
 	github.com/go-zookeeper/zk v1.0.3
 )
 
 require (
 	github.com/apache/thrift v0.13.0 // indirect
-	github.com/bytedance/gopkg v0.0.0-20230728082804-614d0af6619b // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
 	github.com/choleraehyq/pid v0.0.17 // indirect
-	github.com/cloudwego/configmanager v0.2.0 // indirect
 	github.com/cloudwego/dynamicgo v0.1.3 // indirect
 	github.com/cloudwego/fastpb v0.0.4 // indirect
 	github.com/cloudwego/frugal v0.1.8 // indirect
