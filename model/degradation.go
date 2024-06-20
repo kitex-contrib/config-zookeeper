@@ -12,6 +12,7 @@ import (
 
 var errRejected = errors.New("rejected by client degradation config")
 
+
 var defaultConfig = &Config{
 	Enable:     false,
 	Percentage: 0,
